@@ -1,7 +1,14 @@
+// let now = moment();
 let currentDayDiv = document.getElementById("singledayData");
 let forecastDiv = document.getElementById("forecastDiv");
 let searchBtn = document.getElementById("searchBtn");
 let historyArr = JSON.parse(localStorage.getItem("historyArr")) || [];
+// var day = dayjs(today);
+// console.log(day);
+// var date = day.$M + "-" + day.$D + "-" + day.$y;
+// var time = day.$H + ":" + day.$m + ":" + day.$s;
+// var dateTime = date + " " + time;
+// document.getElementById("currentDay").innerHTML = dateTime;
 
 function createButton(cityName) {
   var historyButton = document.createElement("button");
@@ -20,6 +27,9 @@ function createButton(cityName) {
         let cityNameDiv = document.createElement("div");
         cityNameDiv.innerHTML = data.name; //data.name
 
+        let todayDate = document.createElement("div");
+        todayDate.innerHTML = moment.unix(data.dt).format("MM/DD/YY");
+
         let tempDiv = document.createElement("div");
         tempDiv.innerHTML = data.main.temp; //data.main.temp
 
@@ -29,7 +39,20 @@ function createButton(cityName) {
         let windDiv = document.createElement("div");
         windDiv.innerHTML = data.wind.speed; //data.wind.speed
 
-        currentDayDiv.append(cityNameDiv, tempDiv, humidityDiv, windDiv);
+        let iconDiv = document.createElement("img");
+        iconDiv.setAttribute(
+          "src",
+          "http://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png"
+        );
+        iconDiv.setAttribute("class", "iconStyle");
+        currentDayDiv.append(
+          cityNameDiv,
+          tempDiv,
+          humidityDiv,
+          windDiv,
+          todayDate,
+          iconDiv
+        );
       });
     getForecastData(cityName);
   });
@@ -40,7 +63,7 @@ for (let index = 0; index < historyArr.length; index++) {
 }
 function getWeather(event) {
   event.preventDefault();
-  currentDayDiv.innerHTML = "";
+  currentDayDiv.innerHTML = "Today's Weather:";
   let cityName = document.querySelector("#cityName").value;
   createButton(cityName);
   historyArr.push(cityName);
@@ -55,6 +78,9 @@ function getWeather(event) {
       let cityNameDiv = document.createElement("div");
       cityNameDiv.innerHTML = data.name; //data.name
 
+      let todayDate = document.createElement("div");
+      todayDate.innerHTML = moment.unix(data.dt).format("MM/DD/YY");
+
       let tempDiv = document.createElement("div");
       tempDiv.innerHTML = data.main.temp; //data.main.temp
 
@@ -64,7 +90,21 @@ function getWeather(event) {
       let windDiv = document.createElement("div");
       windDiv.innerHTML = data.wind.speed; //data.wind.speed
 
-      currentDayDiv.append(cityNameDiv, tempDiv, humidityDiv, windDiv);
+      let iconDiv = document.createElement("img");
+      iconDiv.setAttribute(
+        "src",
+        "http://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png"
+      );
+      iconDiv.setAttribute("class", "iconStyle");
+
+      currentDayDiv.append(
+        cityNameDiv,
+        tempDiv,
+        humidityDiv,
+        windDiv,
+        todayDate,
+        iconDiv
+      );
     });
   getForecastData(cityName);
 }
@@ -77,17 +117,44 @@ function getForecastData(cityName) {
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
+      let fiveDayHeader = document.createElement("h2");
+      fiveDayHeader.innerHTML = "Five Day Forecast";
+      forecastDiv.append(fiveDayHeader);
       for (let index = 5; index < data.list.length; index = index + 8) {
         console.log(data.list[index]);
+
         let cardDiv = document.createElement("div");
-        cardDiv.setAttribute("class", "card");
+        cardDiv.setAttribute("class", "cardData");
+        // let currentForecastDate = now.add(i + 1, "d");
+        let forecastDate = document.createElement("h3");
+        forecastDate.textContent = moment
+          .unix(data.list[index].dt)
+          .format("MM/DD/YY");
+        // console.log(currentForecastDate);
         let forecastTemp = document.createElement("div");
-        forecastTemp.innerHTML = "temp:" + data.list[index].main.temp;
+        forecastTemp.innerHTML = "Temp: " + data.list[index].main.temp;
 
         let humidityDiv = document.createElement("div");
-        humidityDiv.innerHTML = "Humidity:" + data.list[index].main.humidity;
+        humidityDiv.innerHTML = "Humidity: " + data.list[index].main.humidity;
 
-        cardDiv.append(forecastTemp, humidityDiv);
+        let windDiv = document.createElement("div");
+        windDiv.innerHTML = "Wind Speed: " + data.list[index].wind.speed;
+
+        let iconDiv = document.createElement("img");
+        iconDiv.setAttribute(
+          "src",
+          "http://openweathermap.org/img/wn/" +
+            data.list[index].weather[0].icon +
+            "@2x.png"
+        );
+
+        cardDiv.append(
+          forecastTemp,
+          humidityDiv,
+          windDiv,
+          iconDiv,
+          forecastDate
+        );
         forecastDiv.append(cardDiv);
       }
     });
