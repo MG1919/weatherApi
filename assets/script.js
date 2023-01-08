@@ -19,7 +19,7 @@ function createButton(cityName) {
 
     let api_key = "de1ebdbab3dcbe90af84b3193af5cd9b";
     console.log(cityName);
-    let queryUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${api_key}`;
+    let queryUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${api_key}&units=imperial`;
     fetch(queryUrl)
       .then((response) => response.json())
       .then((data) => {
@@ -70,7 +70,7 @@ function getWeather(event) {
   localStorage.setItem("historyArr", JSON.stringify(historyArr));
   let api_key = "de1ebdbab3dcbe90af84b3193af5cd9b";
   console.log(cityName);
-  let queryUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${api_key}`;
+  let queryUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${api_key}&units=imperial`;
   fetch(queryUrl)
     .then((response) => response.json())
     .then((data) => {
@@ -112,7 +112,7 @@ function getWeather(event) {
 function getForecastData(cityName) {
   forecastDiv.innerHTML = "";
   let api_key = "de1ebdbab3dcbe90af84b3193af5cd9b";
-  let queryUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${api_key}`;
+  let queryUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${api_key}&units=imperial`;
   fetch(queryUrl)
     .then((response) => response.json())
     .then((data) => {
